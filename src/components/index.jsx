@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Grid, makeStyles, Paper, rgbToHex, Slider, withStyles } from "@material-ui/core";
+import { Button, Grid, makeStyles, Paper, rgbToHex, Slider, withStyles } from "@material-ui/core";
 import { blue, green, red } from "@material-ui/core/colors";
+import { FileCopy } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +19,17 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: blue[50],
     margin: theme.spacing(3),
     minHeight: "10vh",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  button: {
+    padding: theme.spacing(2),
+    borderRadius: 0,
+    border: "2px solid",
+    color: "#FFF",
+    borderColor: "#FFF"
   },
 }));
 
@@ -29,7 +41,7 @@ const RedSlider = withStyles({
   thumb: {
     height: 24,
     width: 24,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     border: "2px solid currentColor",
     marginTop: -8,
     marginLeft: -12,
@@ -59,7 +71,7 @@ const GreenSlider = withStyles({
   thumb: {
     height: 24,
     width: 24,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     border: "2px solid currentColor",
     marginTop: -8,
     marginLeft: -12,
@@ -89,7 +101,7 @@ const BlueSlider = withStyles({
   thumb: {
     height: 24,
     width: 24,
-    backgroundColor: "#fff",
+    backgroundColor: "#FFF",
     border: "2px solid currentColor",
     marginTop: -8,
     marginLeft: -12,
@@ -127,7 +139,18 @@ export default function ColourPickerIndex (props) {
   ...(color === "blue" && { blue: newValue }),
     })
   }
-  console.log(rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase())
+
+  const pickTextColorBasedOnBgColorSimple = (bgColor, lightColor = "#FFF", darkColor = "#000") => {
+    let color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+    let r = parseInt(color.substring(0, 2), 16); // hexToR
+    let g = parseInt(color.substring(2, 4), 16); // hexToG
+    let b = parseInt(color.substring(4, 6), 16); // hexToB
+    return (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ?
+      darkColor : lightColor;
+  }
+
+  const hexValue = rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase();
+  const fontAndBorderColor = pickTextColorBasedOnBgColorSimple(hexValue);
 
   return (
     <div className={classes.root}>
@@ -141,7 +164,19 @@ export default function ColourPickerIndex (props) {
       >
         <Grid item xs={8} sm={6} md={4} lg={4} xl={4}>
           <Paper className={classes.paper} elevation={5}>
-            <Paper className={classes.insidePaper} elevation={0} style={{ backgroundColor:  `rgb(${state.red}, ${state.green}, ${state.blue})` }} />
+            <Paper className={classes.insidePaper} elevation={0} style={{ backgroundColor:  `rgb(${state.red}, ${state.green}, ${state.blue})` }}>
+              <Button
+                disableElevation
+                size="large"
+                variant="text"
+                color="primary"
+                className={classes.button}
+                endIcon={<FileCopy/>}
+                style={{ color: `${fontAndBorderColor}`, borderColor: `${fontAndBorderColor}`}}
+              >
+                {hexValue}
+              </Button>
+            </Paper>
             <RedSlider
               valueLabelDisplay="auto"
               value={typeof state.red === "number" ? state.red : 0}
@@ -150,6 +185,7 @@ export default function ColourPickerIndex (props) {
               onChange={(e, newValue) => {
                 handleSliderChange(newValue, "red")
               }}
+              className={classes.slider}
             />
             <GreenSlider
               valueLabelDisplay="auto"
@@ -159,6 +195,7 @@ export default function ColourPickerIndex (props) {
               onChange={(e, newValue) => {
                 handleSliderChange(newValue, "green")
               }}
+              className={classes.slider}
             />
             <BlueSlider
               valueLabelDisplay="auto"
@@ -168,6 +205,7 @@ export default function ColourPickerIndex (props) {
               onChange={(e, newValue) => {
                 handleSliderChange(newValue, "blue")
               }}
+              className={classes.slider}
             />
           </Paper>
         </Grid>
