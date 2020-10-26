@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Button, Grid, makeStyles, Paper, rgbToHex, Slide, Slider, Snackbar, withStyles } from "@material-ui/core";
+import React, { Fragment, useState } from "react";
+import { Button, Grid, IconButton, makeStyles, Paper, rgbToHex, Slide, Slider, Snackbar, SnackbarContent, withStyles } from "@material-ui/core";
 import { blue, green, red } from "@material-ui/core/colors";
-import { FileCopy } from "@material-ui/icons";
+import { Close, FileCopy } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,6 +30,13 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid",
     color: "#FFF",
     borderColor: "#FFF"
+  },
+  snackbar: {
+    padding: theme.spacing(2),
+    borderRadius: 0,
+    border: "2px solid",
+    color: "#ffaaee",
+    borderColor: "#ffaaee"
   },
 }));
 
@@ -139,6 +146,7 @@ export default function ColourPickerIndex (props) {
   const handleSliderChange = (newValue, color) => {
     return setState({
       ...state,
+      open: false,
   ...(color === "red" && { red: newValue }),
   ...(color === "green" && { green: newValue }),
   ...(color === "blue" && { blue: newValue }),
@@ -154,7 +162,8 @@ export default function ColourPickerIndex (props) {
       darkColor : lightColor;
   }
 
-  const handleCopyColor = () => {
+  const handleCopyColor = (e) => {
+    e.preventDefault();
     let el = document.createElement("textarea");
     el.value = hexValue;
     el.setAttribute("readonly", "");
@@ -163,38 +172,62 @@ export default function ColourPickerIndex (props) {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
-    return setState({...state, open: true});
+    return setTimeout(() => {
+      return setState({...state, open: true});
+    });
   }
 
   const handleClose = () => {
-    setState({...state, open: false});
+    return setState({...state, open: false});
   }
 
   const hexValue = rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase();
   const fontAndBorderColor = pickTextColorBasedOnBgColorSimple(hexValue);
-  console.log("state >>> ", state);
+  const bgColor = `rgb(${state.red}, ${state.green}, ${state.blue})`;
 
   return (
     <div className={classes.root}>
       <Snackbar
         open={state.open}
-        autoHideDuration={6000}
+        autoHideDuration={2000}
         onClose={handleClose}
         TransitionComponent={transistionUp}
-        message="I love snacks"
         key={hexValue}
-      />
+      >
+        <SnackbarContent
+          style={{
+            color: `${fontAndBorderColor}`,
+            backgroundColor: `${bgColor}`,
+            border: `2px solid ${fontAndBorderColor}`,
+          }}
+          message={
+            <span>{"You have copied:"} <b>{hexValue}</b></span>
+          }
+          action={
+            <Fragment>
+              <IconButton
+                aria-label="close"
+                style={{ color: `${fontAndBorderColor}` }}
+                onClick={handleClose}
+              >
+                <Close />
+              </IconButton>
+            </Fragment>
+          }
+        >
+        </SnackbarContent>
+      </Snackbar>
       <Grid
         container
         spacing={0}
         direction="row"
         alignItems="center"
         justify="center"
-        style={{ minHeight: '100vh', backgroundColor:  `rgb(${state.red}, ${state.green}, ${state.blue})`}}
+        style={{ minHeight: '100vh', backgroundColor: bgColor}}
       >
         <Grid item xs={8} sm={6} md={4} lg={4} xl={4}>
           <Paper className={classes.paper} elevation={5}>
-            <Paper className={classes.insidePaper} elevation={0} style={{ backgroundColor:  `rgb(${state.red}, ${state.green}, ${state.blue})` }}>
+            <Paper className={classes.insidePaper} elevation={0} style={{ backgroundColor:  bgColor }}>
               <Button
                 disableElevation
                 size="large"
