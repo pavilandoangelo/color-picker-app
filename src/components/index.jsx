@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid, makeStyles, Paper, rgbToHex, Slider, withStyles } from "@material-ui/core";
+import { Button, Grid, makeStyles, Paper, rgbToHex, Slide, Slider, Snackbar, withStyles } from "@material-ui/core";
 import { blue, green, red } from "@material-ui/core/colors";
 import { FileCopy } from "@material-ui/icons";
 
@@ -123,11 +123,16 @@ const BlueSlider = withStyles({
   },
 })(Slider);
 
+const transistionUp = (props) => {
+  return <Slide {...props} direction="up" />;
+}
+
 export default function ColourPickerIndex (props) {
   const [state, setState] = useState({
     red: 120,
     green: 20,
     blue: 210,
+    open: false,
   });
   const classes = useStyles();
 
@@ -149,11 +154,36 @@ export default function ColourPickerIndex (props) {
       darkColor : lightColor;
   }
 
+  const handleCopyColor = () => {
+    let el = document.createElement("textarea");
+    el.value = hexValue;
+    el.setAttribute("readonly", "");
+    el.style = {position: "absolute", left: "-9999px"};
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    return setState({...state, open: true});
+  }
+
+  const handleClose = () => {
+    setState({...state, open: false});
+  }
+
   const hexValue = rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase();
   const fontAndBorderColor = pickTextColorBasedOnBgColorSimple(hexValue);
+  console.log("state >>> ", state);
 
   return (
     <div className={classes.root}>
+      <Snackbar
+        open={state.open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        TransitionComponent={transistionUp}
+        message="I love snacks"
+        key={hexValue}
+      />
       <Grid
         container
         spacing={0}
@@ -173,6 +203,7 @@ export default function ColourPickerIndex (props) {
                 className={classes.button}
                 endIcon={<FileCopy/>}
                 style={{ color: `${fontAndBorderColor}`, borderColor: `${fontAndBorderColor}`}}
+                onClick={handleCopyColor}
               >
                 {hexValue}
               </Button>
