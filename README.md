@@ -1,8 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# color-picker-app
+
+**_Color Picker App_** is an application to generate colors as of your own taste by adjusting the Red, Green and Blue Sliders. It will show you the generated hex color by just adjusting the sliders and, adjusted the colors of the text and borders to light and dark for color contrast of the background color. Laslty, it comes with a feature to copy the generated hex color and roject was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Resources
+
+- https://reactjs.org/
+- https://material-ui.com/
 
 ## Available Scripts
 
 In the project directory, you can run:
+
+### `yarn install`
+
+Will install the package dependecies of the app.
 
 ### `yarn start`
 

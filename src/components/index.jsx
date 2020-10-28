@@ -38,6 +38,12 @@ const useStyles = makeStyles((theme) => ({
     color: "#ffaaee",
     borderColor: "#ffaaee"
   },
+  madeBy: {
+    margin: theme.spacing(2),
+  },
+  cursorPointer: {
+    cursor: "pointer",
+  }
 }));
 
 const RedSlider = withStyles({
@@ -142,6 +148,10 @@ export default function ColourPickerIndex (props) {
     open: false,
   });
   const classes = useStyles();
+  const hexValue = rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase();
+  const bgColor = `rgb(${state.red}, ${state.green}, ${state.blue})`;
+  const gitHubLink = "https://github.com/pavilandoangelo";
+
 
   const handleSliderChange = (newValue, color) => {
     return setState({
@@ -153,7 +163,7 @@ export default function ColourPickerIndex (props) {
     })
   }
 
-  const pickTextColorBasedOnBgColorSimple = (bgColor, lightColor = "#FFF", darkColor = "#000") => {
+  const pickTextColorBasedOnBgColor = (bgColor, lightColor = "#FFF", darkColor = "#000") => {
     let color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
     let r = parseInt(color.substring(0, 2), 16); // hexToR
     let g = parseInt(color.substring(2, 4), 16); // hexToG
@@ -181,9 +191,11 @@ export default function ColourPickerIndex (props) {
     return setState({...state, open: false});
   }
 
-  const hexValue = rgbToHex(`rgb(${state.red}, ${state.green}, ${state.blue})`).toUpperCase();
-  const fontAndBorderColor = pickTextColorBasedOnBgColorSimple(hexValue);
-  const bgColor = `rgb(${state.red}, ${state.green}, ${state.blue})`;
+  const handleOpenLink = () => {
+    window.open(gitHubLink, "_blank")
+  }
+
+  const fontAndBorderColor = pickTextColorBasedOnBgColor(hexValue);
 
   return (
     <div className={classes.root}>
@@ -214,6 +226,7 @@ export default function ColourPickerIndex (props) {
               </IconButton>
             </Fragment>
           }
+          elevation={0}
         >
         </SnackbarContent>
       </Snackbar>
@@ -271,6 +284,12 @@ export default function ColourPickerIndex (props) {
               }}
               className={classes.slider}
             />
+            <Paper elevation={0} className={classes.madeBy}>
+              <strong className={classes.cursorPointer} onClick={handleOpenLink}>
+                {new Date().getFullYear()} - Made with <span role="img" aria-label="heart-icon">❤️ </span>
+                by pavilandoangelo
+              </strong>
+            </Paper>
           </Paper>
         </Grid>
       </Grid>
