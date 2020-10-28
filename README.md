@@ -1,6 +1,6 @@
 # color-picker-app
 
-**_Color Picker App_** is an application to generate colors as of your own taste by adjusting the Red, Green and Blue Sliders. It will show you the generated hex color by just adjusting the sliders and, adjusted the colors of the text and borders to light and dark for color contrast of the background color. Laslty, it comes with a feature to copy the generated hex color and roject was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**_Color Picker App_** is an application to generate color as of your own taste by adjusting the Red, Green and Blue Sliders. It will show you the generated hex color by just adjusting the sliders and also contrasting the color of the text based on the generated color. Lastly, it comes with a feature to copy the generated hex color and roject was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Resources
 
